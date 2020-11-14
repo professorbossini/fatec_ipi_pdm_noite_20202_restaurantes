@@ -3,17 +3,34 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  View
+  View,
+  Image,
+  Button,
+  TouchableOpacity
 } from 'react-native';
 
 import { Picker } from '@react-native-picker/picker';
 import Slider from '@react-native-community/slider';
+
+import * as ImagePicker from 'expo-image-picker';
 
 const AdicionarRestauranteTela = (props) => {
 
   const [nome, setNome] = useState('');
   const[cidade, setCidade] = useState ('');
   const[categoria, setCategoria] = useState ('Categoria');
+  const[preco, setPreco] = useState(1);
+  const[fotoURI, setFotoURI] = useState();
+
+  const tirarFoto = async () => {
+    let foto = await ImagePicker.launchImageLibraryAsync({
+      quality: 1,
+      base64: true
+    })
+    console.log(foto);
+    setFotoURI(foto.uri);
+  }
+
   return (
     <View
       style={estilos.container}>
@@ -59,6 +76,32 @@ const AdicionarRestauranteTela = (props) => {
         />
       </View>
 
+      <View
+        style={estilos.previewImageView}>
+        {
+          fotoURI ?
+          <Image 
+            style={{width: '100%', height: '100%'}}
+            source={{uri: fotoURI}}
+          />
+          :
+          <Text>Sem foto</Text>
+        }
+      </View>
+      
+      <View
+        style={estilos.tirarFotoButton}>
+        <Button 
+          title="Selecionar foto"
+          onPress={()=>tirarFoto()}
+        />
+      </View>
+
+      <TouchableOpacity
+        style={estilos.fab}>
+        <Text
+          style={{fontSize: 16, color: 'white'}}>OK</Text>
+      </TouchableOpacity>
     </View>
   )
 };
@@ -89,6 +132,41 @@ const estilos = StyleSheet.create({
   },
   categoriaPicker: {
     width: '40%'
+  },
+  precoView: {
+    marginVertical: 8,
+    alignItems: 'center'
+  },
+  precoSlider: {
+    width: '90%',
+    marginVertical: 8
+  },
+
+  previewImageView: {
+    alignSelf: 'center',
+    width: '90%',
+    height: 200,
+    borderWidth: 1,
+    borderColor: '#CCC',
+    marginVertical: 12,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  tirarFotoButton: {
+    width: '90%',
+    alignSelf: 'center'
+  },
+  fab: {
+    position: 'absolute',
+    width: 56,
+    height: 56,
+    alignItems: 'center',
+    justifyContent: 'center',
+    right: 30,
+    bottom: 30,
+    backgroundColor: '#03A9F4',
+    borderRadius: 30,
+    elevation: 12
   }
 
 });
